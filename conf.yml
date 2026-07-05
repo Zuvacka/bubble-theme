@@ -1,11 +1,11 @@
 info:
   name: "Bubble Theme"
   identifier: "bubbletheme"
-  description: "Revolut-grade dark UI with a neobrutalist personality layer for the Pterodactyl client area. Pure CSS — zero functional changes, fully retintable from one token block."
+  description: "Žuvačka-branded Revolut-grade dark UI with a neobrutalist personality layer for the Pterodactyl client area. Pure CSS — zero functional changes, fully retintable from one token block."
   flags: ""
-  version: "1.0.0"
+  version: "1.1.0"
   target: "beta-2026-05"
-  author: "Bubble Hosting"
+  author: "Žuvačka"
   icon: "icon.svg"
   website: ""
 

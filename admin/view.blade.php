@@ -6,7 +6,9 @@
             </div>
             <div class="box-body">
                 <p>
-                    <strong>Bubble Theme</strong> restyles the entire Pterodactyl <em>client area</em> —
+                    <strong>Bubble Theme</strong> — the official <strong>Žuvačka</strong> look (brandbook
+                    pinks <code>#FF4A9F</code>/<code>#E51A7A</code>/<code>#FFC3DF</code>, Funnel Display +
+                    Satoshi type, pixel-bubble logo) — restyles the entire Pterodactyl <em>client area</em> —
                     auth pages, server list, console, file manager, databases, schedules, users, backups,
                     network, startup, settings and account pages — in a dark, Revolut-inspired look with a
                     neobrutalist component language.

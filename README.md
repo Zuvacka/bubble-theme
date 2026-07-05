@@ -1,45 +1,59 @@
-# Bubble Theme
+# Bubble Theme (Žuvačka)
 
 A production-safe **Blueprint extension** that reskins the entire Pterodactyl 1.x client area in a
-**Revolut-like dark foundation × neobrutalism** fusion: deep near-black canvas, generous whitespace and
-restrained gradients, with thick 2px frames, hard offset shadows and buttons that physically "press".
+**Revolut-like dark foundation × neobrutalism** fusion, branded to the **Žuvačka** brandbook: deep
+plum-black canvas, generous whitespace and restrained bubble-gum gradients, with thick 2px frames,
+hard offset shadows and buttons that physically "press".
 
 - **Pure CSS.** No JavaScript added, no React components, routes, props or handlers touched. Every panel
   feature works identically to stock.
 - **Token-driven.** Every color, font, radius, border width, shadow offset and motion timing lives in one
   `:root` block — retint the whole theme from one place.
-- **Performance-neutral.** One 22 KB variable woff2 (preloaded, `font-display: swap`) is the only added
-  asset. Transitions are 150–250 ms ease-out on `transform`/`opacity`/cheap zero-blur shadows only, and
+- **Performance-neutral.** Two variable woff2 fonts (~60 KB total, preloaded, `font-display: swap`) are
+  the only added assets; the auth-card logo is an inlined data URI (zero requests). Transitions are
+  150–250 ms ease-out on `transform`/`opacity`/cheap zero-blur shadows only, and
   `prefers-reduced-motion` disables all motion.
 
 ---
 
-## ⚠️ Brandbook status
+## Brandbook — extracted summary (Žuvačka)
 
-**No brandbook file arrived with the build request** (the working environment was searched — no upload was
-present). Per the brief's fallback, the theme ships with the **Bubble default palette** below, chosen so
-that every text/background pair passes **WCAG AA** and so the accent harmonizes with the panel's baked-in
-semantic colors. When the real brandbook is available, update the token block in
-`dashboard/theme.css` (§1 "DESIGN TOKENS") and the `@font-face` in `dashboard/wrapper.blade.php` — nothing
-else needs to change.
+Source of truth: `brandbook_1.pdf`, `zuvacka_logo.svg`, `zuvacka_logobig.png` (supplied by the client).
 
-### Shipped default tokens
+- **Brand**: Žuvačka — a young, playful, "bubble-gum" Minecraft hosting brand. Voice: simple, fun,
+  accessible, fast, cheeky-but-kind ("Drzosť, ale milá"). Archetype: The Creator.
+- **Core palette (exact values from the logo SVG)**: primary pink `#FF4A9F`, deep pink `#E51A7A`,
+  highlight pink `#FFC3DF`, brand black `#231B20`. Brandbook secondaries (from the PDF): off-white
+  `#FFF5F9`, lime `#BDFE00`, mint `#B2F2E9`, purple `#9B59B6`.
+- **Typography**: Funnel Display (primary/display), Satoshi (secondary/body). Both self-hosted as
+  variable woff2 with `font-display: swap` (17.7 KB + 42.6 KB).
+- **Logo rules**: pixel-art bubble mark; never below **71 px** digital (20 mm print); clear space **⅓×**
+  of the logo dimension. The theme renders it at 84 px with ~28 px clear space on the auth card, and
+  ships the exact provided SVG (`public/logo.svg`, also used as the extension icon).
+
+### Token mapping (all in `dashboard/theme.css` §1)
 
 | Token | Value | Role |
 | --- | --- | --- |
-| `--bubble-bg` | `#0A0C12` | page canvas |
-| `--bubble-bg-deep` | `#06070B` | top nav, console well |
-| `--bubble-surface` | `#10131C` | cards, rows |
-| `--bubble-raised` | `#171B28` | inputs, card headers |
-| `--bubble-overlay` | `#1D2233` | hover states |
-| `--bubble-line` | `#262D42` | quiet borders |
-| `--bubble-ink` | `#F2F4FB` | primary text — 16.9:1 on surface (AAA) |
-| `--bubble-ink-dim` | `#A9AFC6` | secondary text — 8.5:1 on surface (AAA) |
-| `--bubble-accent` | `#3B82F6` | primary accent — 5.3:1 as text on canvas (AA) |
-| `--bubble-accent-strong` | `#2563EB` | filled accent, white text 5.2:1 (AA) |
-| `--bubble-cyan` / `--bubble-violet` | `#38D4FF` / `#8B5CF6` | gradient endpoints, decorative only |
-| `--bubble-frame` | `#E9EBF5` | neobrutal 2px frames |
-| Fonts | Space Grotesk (display) / IBM Plex Sans (body) | body font is the panel's own — zero added bytes |
+| `--bubble-bg` | `#141013` | page canvas — plum-black derived from brand `#231B20` |
+| `--bubble-bg-deep` | `#0D0A0C` | top nav, console well |
+| `--bubble-surface` | `#1B1519` | cards, rows |
+| `--bubble-raised` | `#241C21` | inputs, card headers |
+| `--bubble-overlay` | `#2D232A` | hover states |
+| `--bubble-line` | `#3B2D36` | quiet borders |
+| `--bubble-ink` | `#FFF5F9` | brand off-white text — 16.9:1 on surface (AAA) |
+| `--bubble-ink-dim` | `#C9B6C2` | secondary text — 9.4:1 on surface (AAA) |
+| `--bubble-accent` | `#FF4A9F` | logo pink — 6.1:1 as text on canvas (AA) |
+| `--bubble-accent-strong` | `#D91470` | white-text fills — 4.9:1 (AA) ⚠ see deviation below |
+| `--bubble-accent-deep` | `#E51A7A` | logo deep pink — shadows/pressed (non-text) |
+| `--bubble-pink-light` / `--bubble-purple` | `#FFC3DF` / `#9B59B6` | gradient endpoints, decorative |
+| `--bubble-green` / `--bubble-mint` | `#BDFE00` / `#B2F2E9` | brand lime/mint accents |
+| `--bubble-frame` | `#FFF5F9` | neobrutal 2px frames |
+| Fonts | Funnel Display (display) / Satoshi (body) | per brandbook, self-hosted |
+
+**Documented AA deviation**: brand deep pink `#E51A7A` under white text measures **4.41:1** (fails AA by
+a hair), so surfaces that carry white text use `#D91470` (same hue family, darkened; 4.9:1). Selection
+highlights use brand-black text on brand pink (5.4:1) instead of white (3.1:1 — would fail).
 
 ---
 
@@ -95,11 +109,12 @@ No manual cleanup, no data to migrate — the theme stores nothing.
 | --- | --- |
 | `conf.yml` | Extension manifest (documented keys only) |
 | `dashboard/theme.css` | **The theme.** §1 design tokens, then base/nav/cards/auth/forms/buttons/console/dialogs/alerts/tables/links/responsive sections |
-| `dashboard/wrapper.blade.php` | Font preload + `@font-face` (Space Grotesk variable, woff2, `swap`) |
+| `dashboard/wrapper.blade.php` | Font preloads + `@font-face` (Funnel Display + Satoshi, variable woff2, `swap`) |
 | `admin/view.blade.php` | Admin page: retint + rollback instructions, version-mismatch notice |
-| `public/fonts/space-grotesk-latin-wght.woff2` | Self-hosted display font, latin subset, 22 KB |
-| `public/logo.svg` | Optimized Bubble mark (spare asset for branding use) |
-| `icon.svg` | Extension icon in the admin panel |
+| `public/fonts/funnel-display-latin-wght.woff2` | Brand display font, latin subset, 17.7 KB |
+| `public/fonts/satoshi-variable-wght.woff2` | Brand body font, variable, 42.6 KB |
+| `public/logo.svg` | Official Žuvačka logo (exact client-provided SVG) |
+| `icon.svg` | Extension icon in the admin panel (same logo) |
 | `README.md` | This document |
 
 Files Blueprint touches on the panel when installing (all restored on `-remove`): it copies the admin
@@ -127,9 +142,12 @@ keeps every view consistent without per-view forks.
    Changing ANSI colors would require patching panel source — rejected as update-hostile.
 2. **A few button backgrounds** are compiled into hashed CSS-module classes (blue = primary,
    red = danger, gray = text). Variants are indistinguishable to CSS in production builds, so the theme
-   restyles button *geometry and press physics* everywhere but preserves those semantic colors — and the
-   Bubble accent was chosen in the same blue family so they read as one system. Re-pointing them at a
-   non-blue brand color would also require panel source edits.
+   restyles button *geometry and press physics* everywhere but preserves those semantic fill colors —
+   repainting them all Žuvačka-pink would also turn destructive "Delete" buttons pink, which is worse
+   than a handful of primary buttons staying panel-blue. Everywhere the primary color IS reachable
+   (literal `bg-blue-*` / `bg-primary-*` utilities, links, focus rings, nav states, selection, progress,
+   spinners), it is brand pink. Fully unifying the last baked-in blues would require panel source edits
+   — rejected as update-hostile.
 3. The stock Pterodactyl mascot on the auth card is hidden via CSS (`display: none` on that block only);
    the form is untouched.
 

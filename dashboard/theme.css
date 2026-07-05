@@ -21,42 +21,47 @@
 
 /* ==========================================================================
    1. DESIGN TOKENS — the single place to retint the whole theme.
-   NOTE: no brandbook was supplied with this build. The palette below is the
-   Bubble default and passes WCAG AA on every text/background pair used.
-   Drop in your brand values here and rebuild.
+   Populated from the Žuvačka brandbook (brandbook_1.pdf + zuvacka_logo.svg):
+   logo pinks #FF4A9F / #E51A7A / #FFC3DF, brand black #231B20, off-white
+   #FFF5F9, secondary accents lime #BDFE00 / mint #B2F2E9 / purple #9B59B6.
+   Surfaces are derived shades of brand black #231B20 (dark-first UI).
+   AA deviation (documented): white-text pink fills use #D91470 — the brand
+   deep pink #E51A7A reaches only 4.41:1 with white text.
    ========================================================================== */
 :root {
-    /* Canvas & surfaces (Revolut layer) */
-    --bubble-bg: #0a0c12; /* page canvas               */
-    --bubble-bg-deep: #06070b; /* top nav / deepest         */
-    --bubble-surface: #10131c; /* cards, rows               */
-    --bubble-raised: #171b28; /* inputs, card headers      */
-    --bubble-overlay: #1d2233; /* hover states, dropdowns   */
-    --bubble-line: #262d42; /* quiet container borders   */
+    /* Canvas & surfaces — warm plum-black scale derived from brand #231B20 */
+    --bubble-bg: #141013; /* page canvas               */
+    --bubble-bg-deep: #0d0a0c; /* top nav / deepest         */
+    --bubble-surface: #1b1519; /* cards, rows               */
+    --bubble-raised: #241c21; /* inputs, card headers      */
+    --bubble-overlay: #2d232a; /* hover states, dropdowns   */
+    --bubble-line: #3b2d36; /* quiet container borders   */
 
     /* Ink */
-    --bubble-ink: #f2f4fb; /* primary text   (AAA: 16.9:1 on surface) */
-    --bubble-ink-dim: #a9afc6; /* secondary text (AAA:  8.5:1 on surface) */
-    --bubble-ink-faint: #7c829c; /* decorative only — not for body copy    */
+    --bubble-ink: #fff5f9; /* brand off-white (AAA: 16.9:1 on surface)  */
+    --bubble-ink-dim: #c9b6c2; /* secondary text  (AAA:  9.4:1 on surface)  */
+    --bubble-ink-faint: #8e7b88; /* decorative only — not for body copy       */
+    --bubble-brand-black: #231b20; /* logo outline black — dark text on pink    */
 
-    /* Accent system */
-    --bubble-accent: #3b82f6; /* primary accent (AA 5.3:1 as text on canvas) */
-    --bubble-accent-strong: #2563eb; /* filled accent bg (white text = AA 5.2:1)    */
-    --bubble-accent-deep: #1d4ed8; /* hard-shadow / pressed accent                */
-    --bubble-accent-soft: rgba(59, 130, 246, 0.14);
-    --bubble-cyan: #38d4ff; /* gradient end — decorative only */
-    --bubble-violet: #8b5cf6; /* gradient end — decorative only */
-    --bubble-gradient: linear-gradient(135deg, var(--bubble-cyan) 0%, var(--bubble-accent) 45%, var(--bubble-violet) 100%);
+    /* Accent system — Žuvačka pinks */
+    --bubble-accent: #ff4a9f; /* logo primary pink (AA 6.1:1 as text on canvas)      */
+    --bubble-accent-strong: #d91470; /* white-text fills (AA 4.9:1) — darkened from #E51A7A */
+    --bubble-accent-deep: #e51a7a; /* logo deep pink — hard shadows, pressed, non-text    */
+    --bubble-accent-soft: rgba(255, 74, 159, 0.14);
+    --bubble-pink-light: #ffc3df; /* logo highlight pink — decorative */
+    --bubble-purple: #9b59b6; /* brandbook secondary — decorative */
+    --bubble-gradient: linear-gradient(135deg, var(--bubble-pink-light) 0%, var(--bubble-accent) 45%, var(--bubble-purple) 100%);
 
-    /* Status (kept close to panel semantics) */
-    --bubble-green: #34d399;
+    /* Status (brandbook lime for success; yellow/red stay panel-semantic) */
+    --bubble-green: #bdfe00; /* brandbook lime */
+    --bubble-mint: #b2f2e9; /* brandbook mint — decorative */
     --bubble-yellow: #fbbf24;
     --bubble-red: #f87171;
 
     /* Neobrutalism layer */
-    --bubble-frame: #e9ebf5; /* thick contrast border color        */
+    --bubble-frame: #fff5f9; /* thick contrast border color        */
     --bubble-border-w: 2px; /* neobrutal border width             */
-    --bubble-shadow-ink: #04060c; /* hard offset shadow, no blur        */
+    --bubble-shadow-ink: #0a080a; /* hard offset shadow, no blur        */
     --bubble-hs-x: 4px; /* hard shadow offset                 */
     --bubble-hs-y: 4px;
 
@@ -65,9 +70,9 @@
     --bubble-radius-sm: 6px;
     --bubble-radius-pill: 999px;
 
-    /* Type */
-    --bubble-font-display: 'Space Grotesk', 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
-    --bubble-font-body: 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
+    /* Type — brandbook: Funnel Display (primary), Satoshi (secondary) */
+    --bubble-font-display: 'Funnel Display', 'Satoshi', 'IBM Plex Sans', system-ui, sans-serif;
+    --bubble-font-body: 'Satoshi', 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
     --bubble-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
     /* Motion */
@@ -85,12 +90,17 @@ body {
     font-family: var(--bubble-font-body) !important;
 }
 
+/* The panel pins <p> to its own sans stack at runtime — re-pin to Satoshi */
+p {
+    font-family: var(--bubble-font-body) !important;
+}
+
 #app {
     min-height: 100vh;
     /* quiet Revolut-style depth: two ultra-soft radial glows on the canvas */
     background:
-        radial-gradient(1100px 500px at 85% -10%, rgba(139, 92, 246, 0.07), transparent 60%),
-        radial-gradient(900px 420px at -10% 0%, rgba(56, 212, 255, 0.05), transparent 55%),
+        radial-gradient(1100px 500px at 85% -10%, rgba(255, 74, 159, 0.07), transparent 60%),
+        radial-gradient(900px 420px at -10% 0%, rgba(155, 89, 182, 0.06), transparent 55%),
         var(--bubble-bg);
 }
 
@@ -103,7 +113,7 @@ h1, h2, h3, h4, h5, h6 {
 
 ::selection {
     background: var(--bubble-accent);
-    color: #ffffff;
+    color: var(--bubble-brand-black); /* 5.4:1 on brand pink (white would fail AA) */
 }
 
 /* Keyboard focus — neobrutal, unmissable, never removed */
@@ -168,11 +178,13 @@ html {
 .border-neutral-700, .border-gray-700, .border-neutral-600, .border-gray-600 { border-color: var(--bubble-line) !important; }
 .border-neutral-500, .border-gray-500, .border-neutral-400, .border-gray-400 { border-color: var(--bubble-line) !important; }
 
-/* Panel "primary"/blue utilities → Bubble accent */
-.bg-primary-500, .bg-blue-500 { background-color: var(--bubble-accent) !important; }
+/* Panel "primary"/blue utilities → Žuvačka pink.
+   Both land on --bubble-accent-strong: these fills carry white text in the
+   panel, and only the darkened pink passes AA with white. */
+.bg-primary-500, .bg-blue-500 { background-color: var(--bubble-accent-strong) !important; }
 .bg-primary-600, .bg-blue-600 { background-color: var(--bubble-accent-strong) !important; }
 .text-primary-400, .text-blue-400, .text-primary-300, .text-blue-300 { color: var(--bubble-accent) !important; }
-.text-cyan-400, .text-cyan-600 { color: var(--bubble-cyan) !important; }
+.text-cyan-400, .text-cyan-600 { color: var(--bubble-mint) !important; }
 
 /* ==========================================================================
    4. TOP NAVIGATION  (NavigationBar.tsx: literal utilities + #logo +
@@ -322,6 +334,20 @@ div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
     box-shadow: 6px 6px 0 0 var(--bubble-accent-deep) !important;
 }
 
+/* Žuvačka logo on the auth card (brandbook: never below 71px, 1/3x clear
+   space). Inlined as a data URI — zero extra requests, no build-time path
+   resolution. */
+[class*='LoginFormContainer'] form > div::before {
+    content: '';
+    display: block;
+    height: 84px; /* > 71px brandbook minimum */
+    margin: 0 auto 28px; /* ~1/3 logo height of clear space */
+    background-image: url("data:image/svg+xml,%3Csvg width=%22591%22 height=%22539%22 viewBox=%220 0 591 539%22 fill=%22none%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath fill-rule=%22evenodd%22 clip-rule=%22evenodd%22 d=%22M76 152V114H114.014V76H152V37.748H439V76H477V114H515V193H553V231H515V269H478L477.571 347.563H515V425H477V463H438.688L439 501L152.5 500.5V463H113.526V424.5H76V387L39.5005 386.5L38 152H76Z%22 fill=%22%23FF4A9F%22/%3E%3Cpath d=%22M38 386.823V152H76L75.0002 310.181H113.159V386.823H151.963V424.44H399.504V387.802H436.874V347.922H399.504V270.854H438.241V231.875H477.824L477.645 155.525H515V193H553V231H515V269H477.824L477.465 347H515V425H477V463H439V501H151.963V463H113V425H76V386.823H38Z%22 fill=%22%23E51A7A%22/%3E%3Crect x=%22114%22 y=%22152%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22152%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22190%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22190%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22228%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22114%22 y=%22190%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22266%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22501%22 width=%22287%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22152%22 width=%22287%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22152%22 width=%22235%22 height=%2238%22 transform=%22rotate(90 38 152)%22 fill=%22%23231B20%22/%3E%3Crect x=%22439%22 y=%2238%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22553%22 y=%22193%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22231%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22439%22 y=%22463%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%22425%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22387%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2276%22 y=%22425%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22114%22 y=%22463%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22114%22 y=%2238%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2276%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22114%22 width=%2238%22 height=%2279%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%22269%22 width=%2238%22 height=%2279%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22348%22 width=%2238%22 height=%2277%22 fill=%22%23231B20%22/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
 /* Hide the stock Pterodactyl mascot block; the card becomes single-column */
 [class*='LoginFormContainer'] form > div > div:first-of-type {
     display: none !important;
@@ -338,6 +364,7 @@ div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
 input:not([type='checkbox']):not([type='radio']),
 textarea,
 select {
+    font-family: var(--bubble-font-body);
     background-color: var(--bubble-raised) !important;
     border: var(--bubble-border-w) solid var(--bubble-line) !important;
     border-radius: var(--bubble-radius-sm) !important;
@@ -532,7 +559,7 @@ code, pre, kbd {
 /* Top-of-page navigation progress bar → gradient beam */
 [class*='BarFill'] {
     background: var(--bubble-gradient) !important;
-    box-shadow: 0 0 8px rgba(56, 212, 255, 0.6) !important;
+    box-shadow: 0 0 8px rgba(255, 74, 159, 0.6) !important;
     height: 3px !important;
 }
 
