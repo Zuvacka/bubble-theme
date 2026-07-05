@@ -1,0 +1,600 @@
+/* ==========================================================================
+   BUBBLE THEME — Pterodactyl client area
+   Revolut-like dark foundation × neobrutalist component language
+   --------------------------------------------------------------------------
+   • Pure CSS. No JS, no React changes, no removed/renamed anything.
+   • This file is injected into the React bundle via Blueprint's
+     `dashboard.css` bind and therefore loads BEFORE styled-components'
+     runtime styles — `!important` is used deliberately where we must win
+     against runtime-injected CSS of equal specificity.
+   • Selector strategy (verified against pterodactyl/panel 1.0-develop):
+       1. Design tokens on :root — retint everything from section 1.
+       2. Element selectors (input, button, table…).
+       3. Literal Tailwind utility classes that appear in the DOM
+          (.bg-neutral-900, .bg-gray-700, …).
+       4. styled-components displayName classes, which Pterodactyl's babel
+          config keeps in production ([class*="GreyRowBox"], …).
+       5. Stable ids/vendor classes (#app, #logo, #terminal, .xterm…).
+   • GPU-friendly motion only (transform/opacity + cheap 0-blur shadows),
+     everything honors prefers-reduced-motion.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. DESIGN TOKENS — the single place to retint the whole theme.
+   NOTE: no brandbook was supplied with this build. The palette below is the
+   Bubble default and passes WCAG AA on every text/background pair used.
+   Drop in your brand values here and rebuild.
+   ========================================================================== */
+:root {
+    /* Canvas & surfaces (Revolut layer) */
+    --bubble-bg: #0a0c12; /* page canvas               */
+    --bubble-bg-deep: #06070b; /* top nav / deepest         */
+    --bubble-surface: #10131c; /* cards, rows               */
+    --bubble-raised: #171b28; /* inputs, card headers      */
+    --bubble-overlay: #1d2233; /* hover states, dropdowns   */
+    --bubble-line: #262d42; /* quiet container borders   */
+
+    /* Ink */
+    --bubble-ink: #f2f4fb; /* primary text   (AAA: 16.9:1 on surface) */
+    --bubble-ink-dim: #a9afc6; /* secondary text (AAA:  8.5:1 on surface) */
+    --bubble-ink-faint: #7c829c; /* decorative only — not for body copy    */
+
+    /* Accent system */
+    --bubble-accent: #3b82f6; /* primary accent (AA 5.3:1 as text on canvas) */
+    --bubble-accent-strong: #2563eb; /* filled accent bg (white text = AA 5.2:1)    */
+    --bubble-accent-deep: #1d4ed8; /* hard-shadow / pressed accent                */
+    --bubble-accent-soft: rgba(59, 130, 246, 0.14);
+    --bubble-cyan: #38d4ff; /* gradient end — decorative only */
+    --bubble-violet: #8b5cf6; /* gradient end — decorative only */
+    --bubble-gradient: linear-gradient(135deg, var(--bubble-cyan) 0%, var(--bubble-accent) 45%, var(--bubble-violet) 100%);
+
+    /* Status (kept close to panel semantics) */
+    --bubble-green: #34d399;
+    --bubble-yellow: #fbbf24;
+    --bubble-red: #f87171;
+
+    /* Neobrutalism layer */
+    --bubble-frame: #e9ebf5; /* thick contrast border color        */
+    --bubble-border-w: 2px; /* neobrutal border width             */
+    --bubble-shadow-ink: #04060c; /* hard offset shadow, no blur        */
+    --bubble-hs-x: 4px; /* hard shadow offset                 */
+    --bubble-hs-y: 4px;
+
+    /* Geometry */
+    --bubble-radius: 10px;
+    --bubble-radius-sm: 6px;
+    --bubble-radius-pill: 999px;
+
+    /* Type */
+    --bubble-font-display: 'Space Grotesk', 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
+    --bubble-font-body: 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
+    --bubble-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+
+    /* Motion */
+    --bubble-speed: 160ms;
+    --bubble-speed-slow: 240ms;
+    --bubble-ease: cubic-bezier(0.22, 0.61, 0.36, 1); /* ease-out */
+}
+
+/* ==========================================================================
+   2. BASE — canvas, type, selection, scrollbars, focus, motion
+   ========================================================================== */
+body {
+    background-color: var(--bubble-bg) !important;
+    color: var(--bubble-ink) !important;
+    font-family: var(--bubble-font-body) !important;
+}
+
+#app {
+    min-height: 100vh;
+    /* quiet Revolut-style depth: two ultra-soft radial glows on the canvas */
+    background:
+        radial-gradient(1100px 500px at 85% -10%, rgba(139, 92, 246, 0.07), transparent 60%),
+        radial-gradient(900px 420px at -10% 0%, rgba(56, 212, 255, 0.05), transparent 55%),
+        var(--bubble-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--bubble-font-display) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em;
+    color: var(--bubble-ink);
+}
+
+::selection {
+    background: var(--bubble-accent);
+    color: #ffffff;
+}
+
+/* Keyboard focus — neobrutal, unmissable, never removed */
+:focus-visible {
+    outline: var(--bubble-border-w) solid var(--bubble-accent) !important;
+    outline-offset: 2px;
+}
+
+/* Scrollbars (overrides the panel's GlobalStylesheet) */
+::-webkit-scrollbar {
+    background: transparent;
+    width: 12px;
+    height: 12px;
+}
+::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    border-radius: var(--bubble-radius-pill);
+    background-color: var(--bubble-line);
+    -webkit-box-shadow: none;
+    box-shadow: inset 0 0 0 12px var(--bubble-line);
+}
+::-webkit-scrollbar-thumb:hover {
+    box-shadow: inset 0 0 0 12px var(--bubble-accent);
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+html {
+    scrollbar-color: var(--bubble-line) transparent; /* Firefox */
+}
+
+/* Respect users who opt out of motion — kills all theme + panel transitions */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* ==========================================================================
+   3. UTILITY REPAINT — literal Tailwind classes that exist in the DOM.
+   Maps Pterodactyl's gray/neutral scale onto Bubble surfaces.
+   ========================================================================== */
+.bg-black { background-color: var(--bubble-bg-deep) !important; }
+.bg-neutral-900, .bg-gray-900 { background-color: var(--bubble-bg-deep) !important; }
+.bg-neutral-800, .bg-gray-800 { background-color: var(--bubble-bg) !important; }
+.bg-neutral-700, .bg-gray-700 { background-color: var(--bubble-surface) !important; }
+.bg-neutral-600, .bg-gray-600 { background-color: var(--bubble-raised) !important; }
+.bg-neutral-500, .bg-gray-500 { background-color: var(--bubble-overlay) !important; }
+
+.text-neutral-100, .text-gray-100, .text-neutral-50, .text-gray-50 { color: var(--bubble-ink) !important; }
+.text-neutral-200, .text-gray-200, .text-neutral-300, .text-gray-300 { color: var(--bubble-ink) !important; }
+.text-neutral-400, .text-gray-400, .text-neutral-500, .text-gray-500 { color: var(--bubble-ink-dim) !important; }
+.text-neutral-600, .text-gray-600 { color: var(--bubble-ink-faint) !important; }
+
+.border-black { border-color: var(--bubble-line) !important; }
+.border-neutral-900, .border-gray-900, .border-neutral-800, .border-gray-800 { border-color: var(--bubble-line) !important; }
+.border-neutral-700, .border-gray-700, .border-neutral-600, .border-gray-600 { border-color: var(--bubble-line) !important; }
+.border-neutral-500, .border-gray-500, .border-neutral-400, .border-gray-400 { border-color: var(--bubble-line) !important; }
+
+/* Panel "primary"/blue utilities → Bubble accent */
+.bg-primary-500, .bg-blue-500 { background-color: var(--bubble-accent) !important; }
+.bg-primary-600, .bg-blue-600 { background-color: var(--bubble-accent-strong) !important; }
+.text-primary-400, .text-blue-400, .text-primary-300, .text-blue-300 { color: var(--bubble-accent) !important; }
+.text-cyan-400, .text-cyan-600 { color: var(--bubble-cyan) !important; }
+
+/* ==========================================================================
+   4. TOP NAVIGATION  (NavigationBar.tsx: literal utilities + #logo +
+      RightNavigation styled displayName)
+   ========================================================================== */
+.w-full.bg-neutral-900.shadow-md.overflow-x-auto {
+    background-color: rgba(6, 7, 11, 0.92) !important;
+    border-bottom: var(--bubble-border-w) solid var(--bubble-line);
+    box-shadow: none !important;
+}
+
+#logo a {
+    font-family: var(--bubble-font-display) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+    color: var(--bubble-ink) !important;
+    /* gradient wordmark — the one place the gradient sits on raw canvas */
+    background: var(--bubble-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[class*='RightNavigation'] > a,
+[class*='RightNavigation'] > button,
+[class*='RightNavigation'] > .navigation-link {
+    color: var(--bubble-ink-dim) !important;
+    transition: color var(--bubble-speed) var(--bubble-ease), background-color var(--bubble-speed) var(--bubble-ease), box-shadow var(--bubble-speed) var(--bubble-ease) !important;
+}
+[class*='RightNavigation'] > a:hover,
+[class*='RightNavigation'] > button:hover,
+[class*='RightNavigation'] > .navigation-link:hover,
+[class*='RightNavigation'] > a:active,
+[class*='RightNavigation'] > button:active {
+    color: var(--bubble-ink) !important;
+    background-color: var(--bubble-overlay) !important;
+    box-shadow: inset 0 calc(-1 * var(--bubble-border-w) - 1px) 0 var(--bubble-accent) !important;
+}
+[class*='RightNavigation'] > a.active {
+    color: var(--bubble-ink) !important;
+    box-shadow: inset 0 calc(-1 * var(--bubble-border-w) - 1px) 0 var(--bubble-accent) !important;
+}
+
+/* ==========================================================================
+   5. SUB NAVIGATION  (SubNavigation styled displayName)
+   ========================================================================== */
+[class*='SubNavigation'] {
+    background-color: var(--bubble-bg) !important;
+    border-bottom: var(--bubble-border-w) solid var(--bubble-line);
+    box-shadow: none !important;
+}
+[class*='SubNavigation'] > div > a,
+[class*='SubNavigation'] > div > div {
+    color: var(--bubble-ink-dim) !important;
+    font-weight: 500;
+    transition: color var(--bubble-speed) var(--bubble-ease), box-shadow var(--bubble-speed) var(--bubble-ease) !important;
+}
+[class*='SubNavigation'] > div > a:hover {
+    color: var(--bubble-ink) !important;
+}
+[class*='SubNavigation'] > div > a:active,
+[class*='SubNavigation'] > div > a.active {
+    color: var(--bubble-ink) !important;
+    box-shadow: inset 0 calc(-1 * var(--bubble-border-w) - 1px) 0 var(--bubble-accent) !important;
+}
+
+/* ==========================================================================
+   6. CARDS & ROWS — server list, ContentBox, TitledGreyBox, file rows…
+   The core neobrutal move: 2px frame + hard offset shadow + hover lift.
+   ========================================================================== */
+
+/* Server rows / generic grey rows (GreyRowBox + StatusIndicatorBox) */
+[class*='GreyRowBox'] {
+    background-color: var(--bubble-surface) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line) !important;
+    border-radius: var(--bubble-radius) !important;
+    box-shadow: var(--bubble-hs-x) var(--bubble-hs-y) 0 0 var(--bubble-shadow-ink);
+    transition: transform var(--bubble-speed) var(--bubble-ease), border-color var(--bubble-speed) var(--bubble-ease), box-shadow var(--bubble-speed) var(--bubble-ease) !important;
+}
+a[class*='GreyRowBox']:hover,
+a > [class*='GreyRowBox']:hover {
+    border-color: var(--bubble-accent) !important;
+    transform: translate(-2px, -2px);
+    box-shadow: calc(var(--bubble-hs-x) + 2px) calc(var(--bubble-hs-y) + 2px) 0 0 var(--bubble-accent-deep);
+}
+[class*='GreyRowBox'] .icon {
+    background-color: var(--bubble-raised) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line);
+    border-radius: var(--bubble-radius-sm) !important; /* squared-off: neobrutal */
+}
+
+/* Server row status stripe → pill, kept semantic (red/green/yellow) */
+[class*='StatusIndicatorBox'] .status-bar {
+    border-radius: var(--bubble-radius-pill) !important;
+    opacity: 1 !important;
+}
+
+/* ContentBox (account pages, dashboard columns) — the styled inner card */
+div[class*='ContentBox']:not([class*='Flash']) {
+    background-color: var(--bubble-surface) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line) !important;
+    border-radius: var(--bubble-radius) !important;
+    box-shadow: var(--bubble-hs-x) var(--bubble-hs-y) 0 0 var(--bubble-shadow-ink) !important;
+}
+h2[class*='ContentBox'] {
+    font-family: var(--bubble-font-display) !important;
+}
+
+/* TitledGreyBox (settings, startup, details blocks) */
+div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
+    background-color: var(--bubble-surface) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line) !important;
+    border-radius: var(--bubble-radius) !important;
+    box-shadow: var(--bubble-hs-x) var(--bubble-hs-y) 0 0 var(--bubble-shadow-ink) !important;
+    overflow: hidden;
+}
+[class*='TitledGreyBox'] > div:first-of-type {
+    background-color: var(--bubble-raised) !important;
+    border: 0 !important;
+    border-bottom: var(--bubble-border-w) solid var(--bubble-line) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+[class*='TitledGreyBox'] > div:first-of-type p {
+    font-family: var(--bubble-font-display) !important;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--bubble-ink-dim) !important;
+}
+
+/* ==========================================================================
+   7. AUTH PAGES — login, 2FA, password reset (LoginFormContainer)
+   ========================================================================== */
+[class*='LoginFormContainer'] h2 {
+    font-family: var(--bubble-font-display) !important;
+    font-weight: 700 !important;
+    font-size: 2.25rem !important;
+    letter-spacing: -0.02em;
+    color: var(--bubble-ink) !important;
+}
+
+/* The white login card → dark neobrutal card with accent hard shadow */
+[class*='LoginFormContainer'] form > div {
+    background: var(--bubble-surface) !important;
+    border: var(--bubble-border-w) solid var(--bubble-frame) !important;
+    border-radius: var(--bubble-radius) !important;
+    box-shadow: 6px 6px 0 0 var(--bubble-accent-deep) !important;
+}
+
+/* Hide the stock Pterodactyl mascot block; the card becomes single-column */
+[class*='LoginFormContainer'] form > div > div:first-of-type {
+    display: none !important;
+}
+
+/* Labels/text inside the (previously light) card */
+[class*='LoginFormContainer'] form label {
+    color: var(--bubble-ink-dim) !important;
+}
+
+/* ==========================================================================
+   8. FORMS — inputs, selects, textareas, checkboxes, labels
+   ========================================================================== */
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+    background-color: var(--bubble-raised) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line) !important;
+    border-radius: var(--bubble-radius-sm) !important;
+    color: var(--bubble-ink) !important;
+    box-shadow: none !important;
+    transition: border-color var(--bubble-speed) var(--bubble-ease), box-shadow var(--bubble-speed) var(--bubble-ease) !important;
+}
+input:not([type='checkbox']):not([type='radio']):hover,
+textarea:hover,
+select:hover {
+    border-color: var(--bubble-ink-faint) !important;
+}
+input:not([type='checkbox']):not([type='radio']):focus,
+textarea:focus,
+select:focus {
+    border-color: var(--bubble-accent) !important;
+    box-shadow: 3px 3px 0 0 var(--bubble-accent-deep) !important;
+    outline: none !important;
+}
+input::placeholder,
+textarea::placeholder {
+    color: var(--bubble-ink-faint) !important;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+    background-color: var(--bubble-raised) !important;
+    border: var(--bubble-border-w) solid var(--bubble-ink-faint) !important;
+}
+input[type='checkbox']:checked,
+input[type='radio']:checked {
+    background-color: var(--bubble-accent-strong) !important;
+    border-color: var(--bubble-accent) !important;
+}
+input[type='checkbox']:focus,
+input[type='radio']:focus {
+    border-color: var(--bubble-accent) !important;
+    box-shadow: 2px 2px 0 0 var(--bubble-accent-deep) !important;
+}
+
+[class*='Label'] {
+    color: var(--bubble-ink-dim) !important;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   9. BUTTONS — both generations:
+      • new CSS-module buttons  → button[class*="style_"]
+      • legacy styled buttons   → button[class*="Button"]
+      Geometry + press physics only; semantic colors (blue/red/gray) are
+      preserved so danger stays danger.
+   ========================================================================== */
+button[class*='style_'],
+button[class*='Button'],
+a[class*='Button'] {
+    border: var(--bubble-border-w) solid var(--bubble-frame) !important;
+    border-radius: var(--bubble-radius-sm) !important;
+    font-family: var(--bubble-font-display) !important;
+    font-weight: 600 !important;
+    box-shadow: var(--bubble-hs-x) var(--bubble-hs-y) 0 0 var(--bubble-shadow-ink) !important;
+    transition: transform var(--bubble-speed) var(--bubble-ease), box-shadow var(--bubble-speed) var(--bubble-ease), background-color var(--bubble-speed) var(--bubble-ease) !important;
+}
+button[class*='style_']:hover:not(:disabled),
+button[class*='Button']:hover:not(:disabled),
+a[class*='Button']:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: calc(var(--bubble-hs-x) + 2px) calc(var(--bubble-hs-y) + 2px) 0 0 var(--bubble-shadow-ink) !important;
+}
+button[class*='style_']:active:not(:disabled),
+button[class*='Button']:active:not(:disabled),
+a[class*='Button']:active {
+    /* the neobrutal "press": element travels into its own shadow */
+    transform: translate(var(--bubble-hs-x), var(--bubble-hs-y));
+    box-shadow: 0 0 0 0 var(--bubble-shadow-ink) !important;
+}
+button[class*='style_']:disabled,
+button[class*='Button']:disabled {
+    border-color: var(--bubble-line) !important;
+    box-shadow: none !important;
+    opacity: 0.6;
+}
+
+/* Buttons that sit inside the top-nav search/logout keep the flat nav look */
+[class*='RightNavigation'] > button,
+[class*='RightNavigation'] button[class*='style_'] {
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: transparent;
+}
+
+/* ==========================================================================
+   10. SERVER CONSOLE — frame, command bar, power buttons, stat blocks.
+   xterm.js draws ANSI text on a canvas with the stock high-contrast palette;
+   the theme deliberately styles everything around it (see README).
+   ========================================================================== */
+div:has(> #terminal) {
+    background-color: var(--bubble-bg-deep) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line);
+    border-bottom: 0;
+    border-radius: var(--bubble-radius) var(--bubble-radius) 0 0 !important;
+    padding: 0.75rem !important;
+}
+.xterm .xterm-viewport {
+    background-color: transparent !important;
+}
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 0 12px var(--bubble-line);
+}
+
+/* Command input row (element-level coverage; module class is hashed) */
+div:has(> #terminal) + div input,
+input[placeholder*='command' i] {
+    background-color: var(--bubble-raised) !important;
+    border: var(--bubble-border-w) solid var(--bubble-line) !important;
+    border-radius: 0 0 var(--bubble-radius) var(--bubble-radius) !important;
+    font-family: var(--bubble-font-mono) !important;
+}
+input[placeholder*='command' i]:focus {
+    border-color: var(--bubble-accent) !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================================
+   11. MODALS & DIALOGS
+   ========================================================================== */
+[class*='ModalMask'] {
+    background: rgba(4, 6, 12, 0.8) !important;
+}
+[class*='ModalContainer'] > .close-icon {
+    color: var(--bubble-ink) !important;
+}
+
+/* HeadlessUI dialogs (v1.6: stable id prefix on the panel element) */
+.fixed.inset-0.z-40 {
+    background-color: rgba(4, 6, 12, 0.8) !important;
+}
+[id^='headlessui-dialog-panel'] {
+    background-color: var(--bubble-surface) !important;
+    border: var(--bubble-border-w) solid var(--bubble-frame) !important;
+    border-radius: var(--bubble-radius) !important;
+    box-shadow: 6px 6px 0 0 var(--bubble-shadow-ink) !important;
+}
+[id^='headlessui-dialog-panel'] [class*='title'],
+[id^='headlessui-dialog-title'] {
+    font-family: var(--bubble-font-display) !important;
+}
+
+/* ==========================================================================
+   12. ALERTS / FLASH MESSAGES (MessageBox) — semantic colors kept,
+       neobrutal frame added.
+   ========================================================================== */
+[class*='MessageBox'] {
+    border-width: var(--bubble-border-w) !important;
+    border-radius: var(--bubble-radius-sm) !important;
+    box-shadow: 3px 3px 0 0 var(--bubble-shadow-ink);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   13. TABLES, PAGINATION, CODE, PROGRESS, SPINNERS
+   ========================================================================== */
+table {
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+table thead th {
+    font-family: var(--bubble-font-display) !important;
+    letter-spacing: 0.06em;
+    color: var(--bubble-ink-dim) !important;
+    border-bottom: var(--bubble-border-w) solid var(--bubble-line) !important;
+}
+table tbody tr {
+    transition: background-color var(--bubble-speed) var(--bubble-ease);
+}
+table tbody tr:hover {
+    background-color: var(--bubble-overlay);
+}
+
+/* Pagination (styled displayName) + generic pager buttons */
+[class*='Pagination'] button {
+    border-radius: var(--bubble-radius-sm) !important;
+}
+
+code, pre, kbd {
+    font-family: var(--bubble-font-mono) !important;
+    background-color: var(--bubble-bg-deep);
+    border: 1px solid var(--bubble-line);
+    border-radius: var(--bubble-radius-sm);
+}
+
+/* Top-of-page navigation progress bar → gradient beam */
+[class*='BarFill'] {
+    background: var(--bubble-gradient) !important;
+    box-shadow: 0 0 8px rgba(56, 212, 255, 0.6) !important;
+    height: 3px !important;
+}
+
+/* Spinner → accent ring (styled displayName SpinnerComponent) */
+[class*='SpinnerComponent'] {
+    border-color: var(--bubble-accent-soft) !important;
+    border-top-color: var(--bubble-accent) !important;
+}
+[class*='SpinnerOverlay'] {
+    background: rgba(4, 6, 12, 0.6) !important;
+}
+
+/* ==========================================================================
+   14. LINKS & MICRO-POLISH
+   ========================================================================== */
+a {
+    transition: color var(--bubble-speed) var(--bubble-ease);
+}
+p a,
+td a,
+label a {
+    color: var(--bubble-accent) !important;
+    text-decoration: none;
+}
+p a:hover,
+td a:hover,
+label a:hover {
+    color: var(--bubble-cyan) !important;
+}
+
+/* Route-change fade (stock CSSTransition classes) — keep it, tighten it */
+.fade-enter {
+    opacity: 0;
+}
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity var(--bubble-speed) var(--bubble-ease);
+}
+.fade-exit {
+    opacity: 1;
+}
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity var(--bubble-speed) var(--bubble-ease);
+}
+
+/* ==========================================================================
+   15. RESPONSIVE / SMALL SCREENS
+   ========================================================================== */
+@media (max-width: 640px) {
+    :root {
+        /* soften the neobrutal offsets so nothing crowds small viewports */
+        --bubble-hs-x: 3px;
+        --bubble-hs-y: 3px;
+    }
+    [class*='LoginFormContainer'] form > div {
+        box-shadow: 4px 4px 0 0 var(--bubble-accent-deep) !important;
+    }
+    /* keep the console usable: full-bleed frame, no side borders */
+    div:has(> #terminal) {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0 !important;
+    }
+}
