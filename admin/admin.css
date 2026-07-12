@@ -1,0 +1,190 @@
+/* ==========================================================================
+   BUBBLE THEME — Žuvačka admin skin (AdminLTE)
+   Loaded on every admin page via Blueprint's `admin.css` bind, but fully
+   scoped under body.bubbletheme-admin — the class is only added by
+   admin/wrapper.blade.php when the "Admin theme" option is enabled, so
+   turning the toggle off restores the stock admin look without a rebuild.
+   ========================================================================== */
+
+body.bubbletheme-admin {
+    background-color: #141013 !important;
+    color: #fff5f9;
+    font-family: 'Satoshi', 'Source Sans Pro', system-ui, sans-serif;
+}
+
+body.bubbletheme-admin .wrapper,
+body.bubbletheme-admin .content-wrapper {
+    background-color: #141013 !important;
+}
+
+body.bubbletheme-admin h1, body.bubbletheme-admin h2, body.bubbletheme-admin h3,
+body.bubbletheme-admin h4, body.bubbletheme-admin h5, body.bubbletheme-admin h6,
+body.bubbletheme-admin .page-header {
+    font-family: 'Funnel Display', 'Satoshi', system-ui, sans-serif;
+    color: #fff5f9;
+}
+body.bubbletheme-admin .content-header > h1 { color: #fff5f9; }
+body.bubbletheme-admin .content-header > h1 > small { color: #c9b6c2; }
+
+/* Top navbar */
+body.bubbletheme-admin .main-header .navbar,
+body.bubbletheme-admin .main-header .logo {
+    background-color: #0d0a0c !important;
+    border-bottom: 2px solid #3b2d36;
+}
+body.bubbletheme-admin .main-header .logo,
+body.bubbletheme-admin .main-header .logo:hover {
+    color: #ff4a9f !important;
+    font-family: 'Funnel Display', system-ui, sans-serif;
+    font-weight: 700;
+}
+body.bubbletheme-admin .main-header .navbar .nav > li > a { color: #c9b6c2; }
+body.bubbletheme-admin .main-header .navbar .nav > li > a:hover {
+    background: #2d232a !important;
+    color: #fff5f9;
+}
+
+/* Sidebar */
+body.bubbletheme-admin .main-sidebar {
+    background-color: #0d0a0c !important;
+    border-right: 2px solid #3b2d36;
+}
+body.bubbletheme-admin .sidebar-menu > li.header {
+    background: transparent !important;
+    color: #8e7b88 !important;
+    font-family: 'Funnel Display', system-ui, sans-serif;
+    letter-spacing: 0.1em;
+}
+body.bubbletheme-admin .sidebar-menu > li > a {
+    color: #c9b6c2;
+    border-left: 3px solid transparent;
+}
+body.bubbletheme-admin .sidebar-menu > li:hover > a,
+body.bubbletheme-admin .sidebar-menu > li.active > a {
+    background: #1b1519 !important;
+    color: #fff5f9 !important;
+    border-left-color: #ff4a9f;
+}
+
+/* Boxes → neobrutal cards */
+body.bubbletheme-admin .box {
+    background: #1b1519;
+    border: 2px solid #3b2d36;
+    border-radius: 10px;
+    border-top-color: #3b2d36;
+    box-shadow: 4px 4px 0 0 #0a080a;
+    color: #fff5f9;
+}
+body.bubbletheme-admin .box.box-primary { border-top-color: #ff4a9f; }
+body.bubbletheme-admin .box.box-success { border-top-color: #bdfe00; }
+body.bubbletheme-admin .box.box-danger { border-top-color: #f87171; }
+body.bubbletheme-admin .box-header {
+    color: #fff5f9;
+    border-bottom: 2px solid #3b2d36;
+}
+body.bubbletheme-admin .box-header .box-title { font-family: 'Funnel Display', system-ui, sans-serif; }
+body.bubbletheme-admin .box-footer {
+    background: #171215;
+    border-top: 2px solid #3b2d36;
+}
+
+/* Buttons */
+body.bubbletheme-admin .btn {
+    border-width: 2px;
+    border-radius: 7px;
+    font-family: 'Funnel Display', system-ui, sans-serif;
+    font-weight: 600;
+    box-shadow: 3px 3px 0 0 #0a080a;
+    transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+}
+body.bubbletheme-admin .btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 0 #0a080a;
+}
+body.bubbletheme-admin .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+body.bubbletheme-admin .btn-primary {
+    background-color: #d91470;
+    border-color: #0a080a;
+}
+body.bubbletheme-admin .btn-primary:hover,
+body.bubbletheme-admin .btn-primary:focus {
+    background-color: #ff4a9f;
+    border-color: #0a080a;
+    color: #231b20;
+}
+body.bubbletheme-admin .btn-default {
+    background-color: #241c21;
+    border-color: #0a080a;
+    color: #fff5f9;
+}
+body.bubbletheme-admin .btn-default:hover { background-color: #2d232a; color: #fff5f9; }
+
+/* Forms */
+body.bubbletheme-admin .form-control {
+    background-color: #241c21;
+    border: 2px solid #3b2d36;
+    border-radius: 7px;
+    color: #fff5f9;
+}
+body.bubbletheme-admin .form-control:focus {
+    border-color: #ff4a9f;
+    box-shadow: 3px 3px 0 0 #e51a7a;
+}
+body.bubbletheme-admin label { color: #c9b6c2; }
+body.bubbletheme-admin .help-block { color: #8e7b88; }
+
+/* Tables */
+body.bubbletheme-admin .table > thead > tr > th {
+    border-bottom: 2px solid #3b2d36;
+    font-family: 'Funnel Display', system-ui, sans-serif;
+    color: #c9b6c2;
+}
+body.bubbletheme-admin .table > tbody > tr > td { border-top: 1px solid #3b2d36; }
+body.bubbletheme-admin .table-hover > tbody > tr:hover { background-color: #2d232a; }
+body.bubbletheme-admin .table-striped > tbody > tr:nth-of-type(odd) { background-color: #171215; }
+
+/* Misc chrome */
+body.bubbletheme-admin a { color: #ff4a9f; }
+body.bubbletheme-admin a:hover { color: #ffc3df; }
+body.bubbletheme-admin .nav-tabs-custom {
+    background: #1b1519;
+    border: 2px solid #3b2d36;
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 0 #0a080a;
+}
+body.bubbletheme-admin .nav-tabs-custom > .nav-tabs { background: #171215; border-bottom: 2px solid #3b2d36; }
+body.bubbletheme-admin .nav-tabs-custom > .nav-tabs > li > a { color: #c9b6c2; }
+body.bubbletheme-admin .nav-tabs-custom > .nav-tabs > li.active > a {
+    background: #1b1519;
+    color: #fff5f9;
+    border-top: 3px solid #ff4a9f;
+}
+body.bubbletheme-admin .callout {
+    background: #241c21 !important;
+    border-radius: 8px;
+    border: 2px solid #3b2d36;
+    border-left-width: 5px;
+    color: #fff5f9;
+}
+body.bubbletheme-admin .callout.callout-warning { border-left-color: #fbbf24; }
+body.bubbletheme-admin .callout.callout-danger { border-left-color: #f87171; }
+body.bubbletheme-admin .callout.callout-info { border-left-color: #ff4a9f; }
+body.bubbletheme-admin .callout.callout-success { border-left-color: #bdfe00; }
+body.bubbletheme-admin .alert-success { background: #1f2a08 !important; border: 2px solid #bdfe00; color: #f8ffe9; }
+body.bubbletheme-admin .alert-info { background: #2a1220 !important; border: 2px solid #ff4a9f; color: #fff5f9; }
+body.bubbletheme-admin .label-primary { background: #d91470 !important; }
+body.bubbletheme-admin .pagination > li > a,
+body.bubbletheme-admin .pagination > li > span {
+    background: #241c21;
+    border: 1px solid #3b2d36;
+    color: #c9b6c2;
+}
+body.bubbletheme-admin .pagination > .active > a { background: #d91470; border-color: #d91470; }
+body.bubbletheme-admin .main-footer {
+    background: #141013;
+    border-top: 2px solid #3b2d36;
+    color: #8e7b88;
+}

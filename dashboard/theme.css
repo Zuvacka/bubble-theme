@@ -1,76 +1,77 @@
 /* ==========================================================================
-   BUBBLE THEME — Pterodactyl client area
-   Revolut-like dark foundation × neobrutalist component language
+   BUBBLE THEME 2.0 — Pterodactyl client area
+   Žuvačka neobrutalism: bubble-gum pink, thick frames, hard offset shadows.
    --------------------------------------------------------------------------
-   • Pure CSS. No JS, no React changes, no removed/renamed anything.
-   • This file is injected into the React bundle via Blueprint's
-     `dashboard.css` bind and therefore loads BEFORE styled-components'
-     runtime styles — `!important` is used deliberately where we must win
-     against runtime-injected CSS of equal specificity.
+   • Injected into the React bundle via Blueprint's `dashboard.css` bind, so
+     it loads BEFORE styled-components' runtime styles — `!important` is used
+     deliberately where we must beat runtime-injected CSS.
+   • Every token below can be overridden at runtime by the Bubble Editor
+     (admin page): the dashboard wrapper emits a `:root` override block from
+     the saved settings, plus body classes:
+       .bubbletheme-glass    → GlassUI styling mode
+       .bubbletheme-sidebar  → sidebar layout (desktop only)
+       .bubbletheme-bgimg    → custom background image active
    • Selector strategy (verified against pterodactyl/panel 1.0-develop):
-       1. Design tokens on :root — retint everything from section 1.
+       1. Design tokens on :root.
        2. Element selectors (input, button, table…).
-       3. Literal Tailwind utility classes that appear in the DOM
-          (.bg-neutral-900, .bg-gray-700, …).
-       4. styled-components displayName classes, which Pterodactyl's babel
-          config keeps in production ([class*="GreyRowBox"], …).
+       3. Literal Tailwind utility classes present in the DOM.
+       4. styled-components displayName classes ([class*="GreyRowBox"], …) —
+          Pterodactyl's babel config keeps display names in production.
        5. Stable ids/vendor classes (#app, #logo, #terminal, .xterm…).
-   • GPU-friendly motion only (transform/opacity + cheap 0-blur shadows),
-     everything honors prefers-reduced-motion.
+   • GPU-friendly motion only; honors prefers-reduced-motion.
    ========================================================================== */
 
 /* ==========================================================================
-   1. DESIGN TOKENS — the single place to retint the whole theme.
-   Populated from the Žuvačka brandbook (brandbook_1.pdf + zuvacka_logo.svg):
-   logo pinks #FF4A9F / #E51A7A / #FFC3DF, brand black #231B20, off-white
-   #FFF5F9, secondary accents lime #BDFE00 / mint #B2F2E9 / purple #9B59B6.
-   Surfaces are derived shades of brand black #231B20 (dark-first UI).
-   AA deviation (documented): white-text pink fills use #D91470 — the brand
-   deep pink #E51A7A reaches only 4.41:1 with white text.
+   1. DESIGN TOKENS
+   Žuvačka brandbook: pinks #FF4A9F / #E51A7A / #FFC3DF, brand black #231B20,
+   off-white #FFF5F9, lime #BDFE00, mint #B2F2E9, purple #9B59B6.
+   Fonts: Funnel Display (primary), Satoshi (secondary).
+   AA note: white-text pink fills use #D91470 (brand #E51A7A is 4.41:1).
    ========================================================================== */
 :root {
     /* Canvas & surfaces — warm plum-black scale derived from brand #231B20 */
-    --bubble-bg: #141013; /* page canvas               */
-    --bubble-bg-deep: #0d0a0c; /* top nav / deepest         */
-    --bubble-surface: #1b1519; /* cards, rows               */
-    --bubble-raised: #241c21; /* inputs, card headers      */
-    --bubble-overlay: #2d232a; /* hover states, dropdowns   */
-    --bubble-line: #3b2d36; /* quiet container borders   */
+    --bubble-bg: #141013;
+    --bubble-bg-deep: #0d0a0c;
+    --bubble-surface: #1b1519;
+    --bubble-raised: #241c21;
+    --bubble-overlay: #2d232a;
+    --bubble-line: #3b2d36;
 
     /* Ink */
-    --bubble-ink: #fff5f9; /* brand off-white (AAA: 16.9:1 on surface)  */
-    --bubble-ink-dim: #c9b6c2; /* secondary text  (AAA:  9.4:1 on surface)  */
-    --bubble-ink-faint: #8e7b88; /* decorative only — not for body copy       */
-    --bubble-brand-black: #231b20; /* logo outline black — dark text on pink    */
+    --bubble-ink: #fff5f9;
+    --bubble-ink-dim: #c9b6c2;
+    --bubble-ink-faint: #8e7b88;
+    --bubble-brand-black: #231b20;
 
     /* Accent system — Žuvačka pinks */
-    --bubble-accent: #ff4a9f; /* logo primary pink (AA 6.1:1 as text on canvas)      */
-    --bubble-accent-strong: #d91470; /* white-text fills (AA 4.9:1) — darkened from #E51A7A */
-    --bubble-accent-deep: #e51a7a; /* logo deep pink — hard shadows, pressed, non-text    */
+    --bubble-accent: #ff4a9f;
+    --bubble-accent-strong: #d91470;
+    --bubble-accent-deep: #e51a7a;
     --bubble-accent-soft: rgba(255, 74, 159, 0.14);
-    --bubble-pink-light: #ffc3df; /* logo highlight pink — decorative */
-    --bubble-purple: #9b59b6; /* brandbook secondary — decorative */
+    --bubble-pink-light: #ffc3df;
+    --bubble-purple: #9b59b6;
     --bubble-gradient: linear-gradient(135deg, var(--bubble-pink-light) 0%, var(--bubble-accent) 45%, var(--bubble-purple) 100%);
 
     /* Status (brandbook lime for success; yellow/red stay panel-semantic) */
-    --bubble-green: #bdfe00; /* brandbook lime */
-    --bubble-mint: #b2f2e9; /* brandbook mint — decorative */
+    --bubble-green: #bdfe00;
+    --bubble-mint: #b2f2e9;
     --bubble-yellow: #fbbf24;
     --bubble-red: #f87171;
 
     /* Neobrutalism layer */
-    --bubble-frame: #fff5f9; /* thick contrast border color        */
-    --bubble-border-w: 2px; /* neobrutal border width             */
-    --bubble-shadow-ink: #0a080a; /* hard offset shadow, no blur        */
-    --bubble-hs-x: 4px; /* hard shadow offset                 */
+    --bubble-frame: #fff5f9;
+    --bubble-border-w: 2px;
+    --bubble-shadow-ink: #0a080a;
+    --bubble-hs-x: 4px;
     --bubble-hs-y: 4px;
 
-    /* Geometry */
+    /* Geometry — overridable from the Bubble Editor */
     --bubble-radius: 10px;
     --bubble-radius-sm: 6px;
     --bubble-radius-pill: 999px;
+    --bubble-logo-size: 28px;
 
-    /* Type — brandbook: Funnel Display (primary), Satoshi (secondary) */
+    /* Type */
     --bubble-font-display: 'Funnel Display', 'Satoshi', 'IBM Plex Sans', system-ui, sans-serif;
     --bubble-font-body: 'Satoshi', 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
     --bubble-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
@@ -78,7 +79,10 @@
     /* Motion */
     --bubble-speed: 160ms;
     --bubble-speed-slow: 240ms;
-    --bubble-ease: cubic-bezier(0.22, 0.61, 0.36, 1); /* ease-out */
+    --bubble-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    /* Sidebar layout */
+    --bubble-sidebar-w: 232px;
 }
 
 /* ==========================================================================
@@ -90,39 +94,41 @@ body {
     font-family: var(--bubble-font-body) !important;
 }
 
-/* The panel pins <p> to its own sans stack at runtime — re-pin to Satoshi */
 p {
     font-family: var(--bubble-font-body) !important;
 }
 
 #app {
     min-height: 100vh;
-    /* quiet Revolut-style depth: two ultra-soft radial glows on the canvas */
     background:
         radial-gradient(1100px 500px at 85% -10%, rgba(255, 74, 159, 0.07), transparent 60%),
         radial-gradient(900px 420px at -10% 0%, rgba(155, 89, 182, 0.06), transparent 55%),
         var(--bubble-bg);
 }
 
+/* Custom background image mode: the wrapper paints body, canvas goes clear */
+body.bubbletheme-bgimg,
+body.bubbletheme-bgimg #app {
+    background: transparent !important;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--bubble-font-display) !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     letter-spacing: -0.01em;
     color: var(--bubble-ink);
 }
 
 ::selection {
     background: var(--bubble-accent);
-    color: var(--bubble-brand-black); /* 5.4:1 on brand pink (white would fail AA) */
+    color: var(--bubble-brand-black);
 }
 
-/* Keyboard focus — neobrutal, unmissable, never removed */
 :focus-visible {
     outline: var(--bubble-border-w) solid var(--bubble-accent) !important;
     outline-offset: 2px;
 }
 
-/* Scrollbars (overrides the panel's GlobalStylesheet) */
 ::-webkit-scrollbar {
     background: transparent;
     width: 12px;
@@ -143,10 +149,9 @@ h1, h2, h3, h4, h5, h6 {
     background: transparent;
 }
 html {
-    scrollbar-color: var(--bubble-line) transparent; /* Firefox */
+    scrollbar-color: var(--bubble-line) transparent;
 }
 
-/* Respect users who opt out of motion — kills all theme + panel transitions */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -158,8 +163,7 @@ html {
 }
 
 /* ==========================================================================
-   3. UTILITY REPAINT — literal Tailwind classes that exist in the DOM.
-   Maps Pterodactyl's gray/neutral scale onto Bubble surfaces.
+   3. UTILITY REPAINT — literal Tailwind classes present in the DOM
    ========================================================================== */
 .bg-black { background-color: var(--bubble-bg-deep) !important; }
 .bg-neutral-900, .bg-gray-900 { background-color: var(--bubble-bg-deep) !important; }
@@ -178,16 +182,14 @@ html {
 .border-neutral-700, .border-gray-700, .border-neutral-600, .border-gray-600 { border-color: var(--bubble-line) !important; }
 .border-neutral-500, .border-gray-500, .border-neutral-400, .border-gray-400 { border-color: var(--bubble-line) !important; }
 
-/* Panel "primary"/blue utilities → Žuvačka pink.
-   Both land on --bubble-accent-strong: these fills carry white text in the
-   panel, and only the darkened pink passes AA with white. */
+/* Panel "primary"/blue utilities → Žuvačka pink (AA with white text) */
 .bg-primary-500, .bg-blue-500 { background-color: var(--bubble-accent-strong) !important; }
 .bg-primary-600, .bg-blue-600 { background-color: var(--bubble-accent-strong) !important; }
 .text-primary-400, .text-blue-400, .text-primary-300, .text-blue-300 { color: var(--bubble-accent) !important; }
 .text-cyan-400, .text-cyan-600 { color: var(--bubble-mint) !important; }
 
 /* ==========================================================================
-   4. TOP NAVIGATION  (NavigationBar.tsx: literal utilities + #logo +
+   4. TOP NAVIGATION  (NavigationBar: literal utilities + #logo +
       RightNavigation styled displayName)
    ========================================================================== */
 .w-full.bg-neutral-900.shadow-md.overflow-x-auto {
@@ -197,15 +199,45 @@ html {
 }
 
 #logo a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     font-family: var(--bubble-font-display) !important;
     font-weight: 700 !important;
     letter-spacing: -0.02em;
     color: var(--bubble-ink) !important;
-    /* gradient wordmark — the one place the gradient sits on raw canvas */
     background: var(--bubble-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* Custom logo image injected by the wrapper (Bubble Editor › Branding) */
+#logo a img.bubbletheme-logo {
+    height: var(--bubble-logo-size);
+    width: auto;
+    display: inline-block;
+}
+
+/* Support links injected by the wrapper (Bubble Editor › Support links) */
+a.bubbletheme-navlink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.9rem;
+    align-self: stretch;
+    color: var(--bubble-ink-dim) !important;
+    transition: color var(--bubble-speed) var(--bubble-ease), background-color var(--bubble-speed) var(--bubble-ease);
+}
+a.bubbletheme-navlink:hover {
+    color: var(--bubble-ink) !important;
+    background-color: var(--bubble-overlay);
+    box-shadow: inset 0 calc(-1 * var(--bubble-border-w) - 1px) 0 var(--bubble-accent);
+}
+a.bubbletheme-navlink svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: currentColor;
 }
 
 [class*='RightNavigation'] > a,
@@ -252,11 +284,9 @@ html {
 }
 
 /* ==========================================================================
-   6. CARDS & ROWS — server list, ContentBox, TitledGreyBox, file rows…
-   The core neobrutal move: 2px frame + hard offset shadow + hover lift.
+   6. CARDS & ROWS — the core neobrutal move:
+      2px frame + hard offset shadow + hover lift + pink icon tiles.
    ========================================================================== */
-
-/* Server rows / generic grey rows (GreyRowBox + StatusIndicatorBox) */
 [class*='GreyRowBox'] {
     background-color: var(--bubble-surface) !important;
     border: var(--bubble-border-w) solid var(--bubble-line) !important;
@@ -270,10 +300,14 @@ a > [class*='GreyRowBox']:hover {
     transform: translate(-2px, -2px);
     box-shadow: calc(var(--bubble-hs-x) + 2px) calc(var(--bubble-hs-y) + 2px) 0 0 var(--bubble-accent-deep);
 }
+
+/* Icon tiles — the Arix-style squared icon block, Žuvačka-pink & framed */
 [class*='GreyRowBox'] .icon {
-    background-color: var(--bubble-raised) !important;
-    border: var(--bubble-border-w) solid var(--bubble-line);
-    border-radius: var(--bubble-radius-sm) !important; /* squared-off: neobrutal */
+    background-color: var(--bubble-accent-strong) !important;
+    border: var(--bubble-border-w) solid var(--bubble-frame);
+    border-radius: var(--bubble-radius-sm) !important;
+    box-shadow: 3px 3px 0 0 var(--bubble-shadow-ink);
+    color: #ffffff !important;
 }
 
 /* Server row status stripe → pill, kept semantic (red/green/yellow) */
@@ -282,7 +316,7 @@ a > [class*='GreyRowBox']:hover {
     opacity: 1 !important;
 }
 
-/* ContentBox (account pages, dashboard columns) — the styled inner card */
+/* ContentBox (account pages, dashboard columns) */
 div[class*='ContentBox']:not([class*='Flash']) {
     background-color: var(--bubble-surface) !important;
     border: var(--bubble-border-w) solid var(--bubble-line) !important;
@@ -312,6 +346,7 @@ div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
     font-family: var(--bubble-font-display) !important;
     font-weight: 600;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--bubble-ink-dim) !important;
 }
 
@@ -326,7 +361,6 @@ div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
     color: var(--bubble-ink) !important;
 }
 
-/* The white login card → dark neobrutal card with accent hard shadow */
 [class*='LoginFormContainer'] form > div {
     background: var(--bubble-surface) !important;
     border: var(--bubble-border-w) solid var(--bubble-frame) !important;
@@ -334,26 +368,23 @@ div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
     box-shadow: 6px 6px 0 0 var(--bubble-accent-deep) !important;
 }
 
-/* Žuvačka logo on the auth card (brandbook: never below 71px, 1/3x clear
-   space). Inlined as a data URI — zero extra requests, no build-time path
-   resolution. */
+/* Žuvačka pixel-bubble on the auth card (brandbook: ≥71px + ⅓× clear space).
+   The wrapper swaps this to the custom logo when one is configured. */
 [class*='LoginFormContainer'] form > div::before {
     content: '';
     display: block;
-    height: 84px; /* > 71px brandbook minimum */
-    margin: 0 auto 28px; /* ~1/3 logo height of clear space */
-    background-image: url("data:image/svg+xml,%3Csvg width=%22591%22 height=%22539%22 viewBox=%220 0 591 539%22 fill=%22none%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath fill-rule=%22evenodd%22 clip-rule=%22evenodd%22 d=%22M76 152V114H114.014V76H152V37.748H439V76H477V114H515V193H553V231H515V269H478L477.571 347.563H515V425H477V463H438.688L439 501L152.5 500.5V463H113.526V424.5H76V387L39.5005 386.5L38 152H76Z%22 fill=%22%23FF4A9F%22/%3E%3Cpath d=%22M38 386.823V152H76L75.0002 310.181H113.159V386.823H151.963V424.44H399.504V387.802H436.874V347.922H399.504V270.854H438.241V231.875H477.824L477.645 155.525H515V193H553V231H515V269H477.824L477.465 347H515V425H477V463H439V501H151.963V463H113V425H76V386.823H38Z%22 fill=%22%23E51A7A%22/%3E%3Crect x=%22114%22 y=%22152%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22152%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22190%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22190%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22228%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22114%22 y=%22190%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22266%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22501%22 width=%22287%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22152%22 width=%22287%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22152%22 width=%22235%22 height=%2238%22 transform=%22rotate(90 38 152)%22 fill=%22%23231B20%22/%3E%3Crect x=%22439%22 y=%2238%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22553%22 y=%22193%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22231%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22439%22 y=%22463%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%22425%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22387%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2276%22 y=%22425%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22114%22 y=%22463%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22114%22 y=%2238%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2276%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22114%22 width=%2238%22 height=%2279%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%22269%22 width=%2238%22 height=%2279%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22348%22 width=%2238%22 height=%2277%22 fill=%22%23231B20%22/%3E%3C/svg%3E");
+    height: 84px;
+    margin: 0 auto 28px;
+    background-image: var(--bubble-auth-logo, url("data:image/svg+xml,%3Csvg width=%22591%22 height=%22539%22 viewBox=%220 0 591 539%22 fill=%22none%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath fill-rule=%22evenodd%22 clip-rule=%22evenodd%22 d=%22M76 152V114H114.014V76H152V37.748H439V76H477V114H515V193H553V231H515V269H478L477.571 347.563H515V425H477V463H438.688L439 501L152.5 500.5V463H113.526V424.5H76V387L39.5005 386.5L38 152H76Z%22 fill=%22%23FF4A9F%22/%3E%3Cpath d=%22M38 386.823V152H76L75.0002 310.181H113.159V386.823H151.963V424.44H399.504V387.802H436.874V347.922H399.504V270.854H438.241V231.875H477.824L477.645 155.525H515V193H553V231H515V269H477.824L477.465 347H515V425H477V463H439V501H151.963V463H113V425H76V386.823H38Z%22 fill=%22%23E51A7A%22/%3E%3Crect x=%22114%22 y=%22152%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22152%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22190%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22190%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22228%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22114%22 y=%22190%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22266%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23FFC3DF%22/%3E%3Crect x=%22152%22 y=%22501%22 width=%22287%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22152%22 width=%22287%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22152%22 width=%22235%22 height=%2238%22 transform=%22rotate(90 38 152)%22 fill=%22%23231B20%22/%3E%3Crect x=%22439%22 y=%2238%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22553%22 y=%22193%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22231%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22439%22 y=%22463%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%22425%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22387%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2276%22 y=%22425%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22114%22 y=%22463%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22114%22 y=%2238%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2276%22 y=%2276%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%2238%22 y=%22114%22 width=%2238%22 height=%2238%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22114%22 width=%2238%22 height=%2279%22 fill=%22%23231B20%22/%3E%3Crect x=%22477%22 y=%22269%22 width=%2238%22 height=%2279%22 fill=%22%23231B20%22/%3E%3Crect x=%22515%22 y=%22348%22 width=%2238%22 height=%2277%22 fill=%22%23231B20%22/%3E%3C/svg%3E"));
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
 }
 
-/* Hide the stock Pterodactyl mascot block; the card becomes single-column */
 [class*='LoginFormContainer'] form > div > div:first-of-type {
     display: none !important;
 }
 
-/* Labels/text inside the (previously light) card */
 [class*='LoginFormContainer'] form label {
     color: var(--bubble-ink-dim) !important;
 }
@@ -411,11 +442,9 @@ input[type='radio']:focus {
 }
 
 /* ==========================================================================
-   9. BUTTONS — both generations:
-      • new CSS-module buttons  → button[class*="style_"]
-      • legacy styled buttons   → button[class*="Button"]
-      Geometry + press physics only; semantic colors (blue/red/gray) are
-      preserved so danger stays danger.
+   9. BUTTONS — both generations (CSS-module + legacy styled).
+      Geometry + press physics only; semantic fills (blue/red/gray) are kept
+      so danger stays danger. Reachable primaries are repainted pink in §3.
    ========================================================================== */
 button[class*='style_'],
 button[class*='Button'],
@@ -436,7 +465,6 @@ a[class*='Button']:hover {
 button[class*='style_']:active:not(:disabled),
 button[class*='Button']:active:not(:disabled),
 a[class*='Button']:active {
-    /* the neobrutal "press": element travels into its own shadow */
     transform: translate(var(--bubble-hs-x), var(--bubble-hs-y));
     box-shadow: 0 0 0 0 var(--bubble-shadow-ink) !important;
 }
@@ -447,7 +475,7 @@ button[class*='Button']:disabled {
     opacity: 0.6;
 }
 
-/* Buttons that sit inside the top-nav search/logout keep the flat nav look */
+/* Buttons inside the top nav keep the flat nav look */
 [class*='RightNavigation'] > button,
 [class*='RightNavigation'] button[class*='style_'] {
     border: 0 !important;
@@ -459,7 +487,7 @@ button[class*='Button']:disabled {
 /* ==========================================================================
    10. SERVER CONSOLE — frame, command bar, power buttons, stat blocks.
    xterm.js draws ANSI text on a canvas with the stock high-contrast palette;
-   the theme deliberately styles everything around it (see README).
+   the theme styles everything around it (see README).
    ========================================================================== */
 div:has(> #terminal) {
     background-color: var(--bubble-bg-deep) !important;
@@ -475,7 +503,6 @@ div:has(> #terminal) {
     box-shadow: inset 0 0 0 12px var(--bubble-line);
 }
 
-/* Command input row (element-level coverage; module class is hashed) */
 div:has(> #terminal) + div input,
 input[placeholder*='command' i] {
     background-color: var(--bubble-raised) !important;
@@ -498,7 +525,6 @@ input[placeholder*='command' i]:focus {
     color: var(--bubble-ink) !important;
 }
 
-/* HeadlessUI dialogs (v1.6: stable id prefix on the panel element) */
 .fixed.inset-0.z-40 {
     background-color: rgba(4, 6, 12, 0.8) !important;
 }
@@ -514,8 +540,7 @@ input[placeholder*='command' i]:focus {
 }
 
 /* ==========================================================================
-   12. ALERTS / FLASH MESSAGES (MessageBox) — semantic colors kept,
-       neobrutal frame added.
+   12. ALERTS / FLASH MESSAGES (MessageBox)
    ========================================================================== */
 [class*='MessageBox'] {
     border-width: var(--bubble-border-w) !important;
@@ -544,7 +569,6 @@ table tbody tr:hover {
     background-color: var(--bubble-overlay);
 }
 
-/* Pagination (styled displayName) + generic pager buttons */
 [class*='Pagination'] button {
     border-radius: var(--bubble-radius-sm) !important;
 }
@@ -556,14 +580,12 @@ code, pre, kbd {
     border-radius: var(--bubble-radius-sm);
 }
 
-/* Top-of-page navigation progress bar → gradient beam */
 [class*='BarFill'] {
     background: var(--bubble-gradient) !important;
     box-shadow: 0 0 8px rgba(255, 74, 159, 0.6) !important;
     height: 3px !important;
 }
 
-/* Spinner → accent ring (styled displayName SpinnerComponent) */
 [class*='SpinnerComponent'] {
     border-color: var(--bubble-accent-soft) !important;
     border-top-color: var(--bubble-accent) !important;
@@ -573,7 +595,7 @@ code, pre, kbd {
 }
 
 /* ==========================================================================
-   14. LINKS & MICRO-POLISH
+   14. LINKS, ROUTE FADE & MICRO-POLISH
    ========================================================================== */
 a {
     transition: color var(--bubble-speed) var(--bubble-ease);
@@ -587,38 +609,249 @@ label a {
 p a:hover,
 td a:hover,
 label a:hover {
-    color: var(--bubble-cyan) !important;
+    color: var(--bubble-pink-light) !important;
 }
 
-/* Route-change fade (stock CSSTransition classes) — keep it, tighten it */
-.fade-enter {
-    opacity: 0;
-}
+.fade-enter { opacity: 0; }
 .fade-enter-active {
     opacity: 1;
     transition: opacity var(--bubble-speed) var(--bubble-ease);
 }
-.fade-exit {
-    opacity: 1;
-}
+.fade-exit { opacity: 1; }
 .fade-exit-active {
     opacity: 0;
     transition: opacity var(--bubble-speed) var(--bubble-ease);
 }
 
 /* ==========================================================================
-   15. RESPONSIVE / SMALL SCREENS
+   15. GLASSUI MODE (Bubble Editor › Style Mode = Glass)
+   Translucent surfaces + blur + soft shadows; frames thin out. Uses
+   color-mix() so it tracks any custom surface color; browsers without
+   color-mix simply keep the solid surfaces.
+   ========================================================================== */
+body.bubbletheme-glass [class*='GreyRowBox'],
+body.bubbletheme-glass div[class*='ContentBox']:not([class*='Flash']),
+body.bubbletheme-glass div[class*='TitledGreyBox']:not([class*='StyledDiv2']) {
+    background-color: color-mix(in srgb, var(--bubble-surface) 72%, transparent) !important;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid color-mix(in srgb, var(--bubble-frame) 18%, transparent) !important;
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.65) !important;
+}
+body.bubbletheme-glass a[class*='GreyRowBox']:hover,
+body.bubbletheme-glass a > [class*='GreyRowBox']:hover {
+    transform: translateY(-2px);
+    border-color: var(--bubble-accent) !important;
+    box-shadow: 0 22px 44px -18px color-mix(in srgb, var(--bubble-accent) 45%, transparent) !important;
+}
+body.bubbletheme-glass button[class*='style_'],
+body.bubbletheme-glass button[class*='Button'],
+body.bubbletheme-glass a[class*='Button'] {
+    border: 1px solid color-mix(in srgb, var(--bubble-frame) 25%, transparent) !important;
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.7) !important;
+}
+body.bubbletheme-glass button[class*='style_']:hover:not(:disabled),
+body.bubbletheme-glass button[class*='Button']:hover:not(:disabled),
+body.bubbletheme-glass a[class*='Button']:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.75) !important;
+}
+body.bubbletheme-glass button[class*='style_']:active:not(:disabled),
+body.bubbletheme-glass button[class*='Button']:active:not(:disabled) {
+    transform: translateY(1px);
+}
+body.bubbletheme-glass [class*='LoginFormContainer'] form > div,
+body.bubbletheme-glass [id^='headlessui-dialog-panel'] {
+    background-color: color-mix(in srgb, var(--bubble-surface) 80%, transparent) !important;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid color-mix(in srgb, var(--bubble-frame) 22%, transparent) !important;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8) !important;
+}
+body.bubbletheme-glass .w-full.bg-neutral-900.shadow-md.overflow-x-auto {
+    background-color: color-mix(in srgb, var(--bubble-bg-deep) 82%, transparent) !important;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid color-mix(in srgb, var(--bubble-frame) 12%, transparent);
+}
+
+/* ==========================================================================
+   16. SIDEBAR LAYOUT (Bubble Editor › Layout = Sidebar) — desktop only.
+   Pure CSS re-composition of the stock NavigationBar into a fixed left rail.
+   Server sub-navigation stays horizontal at the top of the content column.
+   ========================================================================== */
+@media (min-width: 1024px) {
+    body.bubbletheme-sidebar .w-full.bg-neutral-900.shadow-md.overflow-x-auto {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: var(--bubble-sidebar-w);
+        height: 100vh;
+        overflow: visible !important;
+        border-bottom: 0;
+        border-right: var(--bubble-border-w) solid var(--bubble-line);
+        z-index: 30;
+    }
+    body.bubbletheme-sidebar .w-full.bg-neutral-900.shadow-md.overflow-x-auto > div {
+        flex-direction: column;
+        align-items: stretch;
+        height: 100% !important;
+        max-width: none !important;
+        padding: 1.1rem 0.8rem;
+    }
+    body.bubbletheme-sidebar #logo {
+        flex: 0 0 auto !important;
+        margin-bottom: 1.25rem;
+        padding: 0 0.4rem;
+    }
+    body.bubbletheme-sidebar [class*='RightNavigation'] {
+        flex-direction: column;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        height: auto !important;
+        gap: 0.25rem;
+    }
+    body.bubbletheme-sidebar [class*='RightNavigation'] > a,
+    body.bubbletheme-sidebar [class*='RightNavigation'] > button,
+    body.bubbletheme-sidebar [class*='RightNavigation'] > .navigation-link,
+    body.bubbletheme-sidebar a.bubbletheme-navlink {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0.65rem 0.8rem !important;
+        border-radius: var(--bubble-radius-sm);
+    }
+    body.bubbletheme-sidebar [class*='RightNavigation'] > a:hover,
+    body.bubbletheme-sidebar [class*='RightNavigation'] > button:hover,
+    body.bubbletheme-sidebar [class*='RightNavigation'] > a.active,
+    body.bubbletheme-sidebar a.bubbletheme-navlink:hover {
+        box-shadow: inset calc(var(--bubble-border-w) + 1px) 0 0 var(--bubble-accent) !important;
+    }
+    body.bubbletheme-sidebar #app {
+        padding-left: var(--bubble-sidebar-w);
+    }
+    body.bubbletheme-sidebar .bubbletheme-announcement {
+        margin-left: var(--bubble-sidebar-w);
+    }
+}
+
+/* ==========================================================================
+   17. WRAPPER-INJECTED UI — announcement banner + hotkey cheat-sheet.
+   These elements are created by dashboard/wrapper.blade.php at body level
+   (outside the React root), so React never re-renders over them.
+   ========================================================================== */
+.bubbletheme-announcement {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    font-family: var(--bubble-font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--bubble-brand-black);
+    background: var(--bubble-accent);
+    border-bottom: var(--bubble-border-w) solid var(--bubble-shadow-ink);
+    position: relative;
+    z-index: 40;
+}
+.bubbletheme-announcement[data-type='success'] { background: var(--bubble-green); }
+.bubbletheme-announcement[data-type='warning'] { background: var(--bubble-yellow); }
+.bubbletheme-announcement[data-type='danger'] { background: var(--bubble-red); }
+.bubbletheme-announcement .bubbletheme-announcement-badge {
+    flex: 0 0 auto;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--bubble-brand-black);
+    color: var(--bubble-ink);
+    border-radius: var(--bubble-radius-sm);
+}
+.bubbletheme-announcement p {
+    margin: 0;
+    flex: 1 1 auto;
+    font-family: inherit !important;
+}
+.bubbletheme-announcement button {
+    flex: 0 0 auto;
+    background: transparent;
+    border: var(--bubble-border-w) solid var(--bubble-brand-black);
+    border-radius: var(--bubble-radius-sm);
+    color: var(--bubble-brand-black);
+    font-family: inherit;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0.25rem 0.55rem;
+    cursor: pointer;
+    transition: transform var(--bubble-speed) var(--bubble-ease);
+}
+.bubbletheme-announcement button:hover { transform: translate(-1px, -1px); }
+.bubbletheme-announcement button:active { transform: translate(1px, 1px); }
+
+.bubbletheme-hotkeys {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4, 6, 12, 0.8);
+}
+.bubbletheme-hotkeys.active { display: flex; }
+.bubbletheme-hotkeys-card {
+    background: var(--bubble-surface);
+    border: var(--bubble-border-w) solid var(--bubble-frame);
+    border-radius: var(--bubble-radius);
+    box-shadow: 6px 6px 0 0 var(--bubble-accent-deep);
+    color: var(--bubble-ink);
+    max-width: 30rem;
+    width: calc(100% - 2rem);
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+}
+.bubbletheme-hotkeys-card h3 {
+    margin: 0 0 0.75rem;
+    font-family: var(--bubble-font-display);
+    font-size: 1.2rem;
+}
+.bubbletheme-hotkeys-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.bubbletheme-hotkeys-card li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0;
+    font-family: var(--bubble-font-body);
+    font-size: 0.9rem;
+    color: var(--bubble-ink-dim);
+}
+.bubbletheme-hotkeys-card kbd {
+    background: var(--bubble-raised);
+    border: 1px solid var(--bubble-line);
+    border-bottom-width: 3px;
+    border-radius: var(--bubble-radius-sm);
+    color: var(--bubble-ink);
+    padding: 0.15rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   18. RESPONSIVE / SMALL SCREENS
    ========================================================================== */
 @media (max-width: 640px) {
     :root {
-        /* soften the neobrutal offsets so nothing crowds small viewports */
         --bubble-hs-x: 3px;
         --bubble-hs-y: 3px;
     }
     [class*='LoginFormContainer'] form > div {
         box-shadow: 4px 4px 0 0 var(--bubble-accent-deep) !important;
     }
-    /* keep the console usable: full-bleed frame, no side borders */
     div:has(> #terminal) {
         border-left: 0;
         border-right: 0;
