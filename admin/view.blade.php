@@ -241,7 +241,7 @@
 
 @if ("{is_target}" != "true")
     <div class="callout callout-warning">
-        This build of Bubble Theme targets Blueprint <code>beta-2026-05</code>, but this panel runs
+        This build of Bubble Theme targets Blueprint <code>beta-2026-06</code>, but this panel runs
         Blueprint <code>{target}</code>. Everything is expected to keep working — this is only a
         version-mismatch notice.
     </div>

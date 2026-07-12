@@ -90,7 +90,7 @@ blueprint -remove bubbletheme   # removes CSS/wrappers/routes and rebuilds stock
                                 # bubbletheme::* settings rows when rolled back
 ```
 
-Requires Blueprint (target `beta-2026-05`) and Node ≥ 22 on the panel host for the frontend rebuild
+Requires Blueprint (target `beta-2026-06`) and Node ≥ 22 on the panel host for the frontend rebuild
 that Blueprint performs during install/remove. Bubble Editor changes themselves never need a rebuild.
 
 ## Accessibility & performance
