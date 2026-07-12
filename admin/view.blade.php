@@ -367,8 +367,8 @@
                         <div class="be-field">
                             <label for="be-layout">Layout</label>
                             <select id="be-layout" name="layout">
+                                <option value="sidebar" @if ($settings['layout'] === 'sidebar') selected @endif>Sidebar — labeled menu, sections, account chip (default)</option>
                                 <option value="topbar" @if ($settings['layout'] === 'topbar') selected @endif>Top bar (stock position)</option>
-                                <option value="sidebar" @if ($settings['layout'] === 'sidebar') selected @endif>Sidebar (desktop, experimental)</option>
                             </select>
                             <p class="be-sub">Sidebar applies at ≥1024px wide; phones keep the top bar.</p>
                         </div>
@@ -502,6 +502,15 @@
                 <section class="be-panel" data-panel="power">
                     <h4>Power tools</h4>
                     <p class="be-hint">For when the 30 knobs above aren't enough.</p>
+                    <div class="be-field" style="margin-bottom: 16px;">
+                        <label>Hide panel branding</label>
+                        <label class="be-toggle">
+                            <input type="hidden" name="hide_branding" value="0">
+                            <input type="checkbox" name="hide_branding" value="1" @if ($settings['hide_branding'] === '1') checked @endif>
+                            <span class="be-pill"></span>
+                            <span class="be-toggle-text">Remove the "Pterodactyl © … • Blueprint © …" footer line</span>
+                        </label>
+                    </div>
                     <div class="be-field">
                         <label>Admin theme</label>
                         <label class="be-toggle">
@@ -526,7 +535,8 @@
                         <tr><th>Feature</th><th>Status</th></tr>
                         <tr><td>Neobrutalist Žuvačka design (full client area)</td><td><span class="be-badge on">Included</span></td></tr>
                         <tr><td>GlassUI styling mode</td><td><span class="be-badge on">Included</span></td></tr>
-                        <tr><td>Multi-layout (top bar / sidebar)</td><td><span class="be-badge on">Included</span></td></tr>
+                        <tr><td>Multi-layout (labeled sidebar / top bar)</td><td><span class="be-badge on">Included</span></td></tr>
+                        <tr><td>Hide panel branding (footer credit)</td><td><span class="be-badge on">Included</span></td></tr>
                         <tr><td>Color changer + presets</td><td><span class="be-badge on">Included</span></td></tr>
                         <tr><td>Custom font family</td><td><span class="be-badge on">Included</span></td></tr>
                         <tr><td>Panel logo, size &amp; title removal</td><td><span class="be-badge on">Included</span></td></tr>

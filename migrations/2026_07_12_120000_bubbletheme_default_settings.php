@@ -26,7 +26,7 @@ return new class extends Migration
             'font_body' => '',
             'font_url' => '',
             'style_mode' => 'brutal',
-            'layout' => 'topbar',
+            'layout' => 'sidebar',
             'radius' => '10',
             'shadow' => '4',
             'bg_image' => '',
@@ -47,6 +47,7 @@ return new class extends Migration
             'pwa_short' => 'Žuvačka',
             'custom_css' => '',
             'admin_theme' => '1',
+            'hide_branding' => '1',
         ];
 
         $missing = [];

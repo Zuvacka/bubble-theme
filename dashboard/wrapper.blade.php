@@ -22,7 +22,7 @@
         'color_accent' => '#FF4A9F', 'color_accent_deep' => '#E51A7A',
         'color_bg' => '#141013', 'color_surface' => '#1B1519', 'color_ink' => '#FFF5F9',
         'font_display' => '', 'font_body' => '', 'font_url' => '',
-        'style_mode' => 'brutal', 'layout' => 'topbar',
+        'style_mode' => 'brutal', 'layout' => 'sidebar',
         'radius' => '10', 'shadow' => '4',
         'bg_image' => '', 'bg_dim' => '80',
         'ann_enabled' => '0', 'ann_text' => '', 'ann_type' => 'info', 'ann_dismiss' => '1',
@@ -31,6 +31,7 @@
         'seo_desc' => '', 'theme_color' => '#FF4A9F', 'favicon' => '',
         'pwa_enabled' => '0',
         'custom_css' => '',
+        'hide_branding' => '1',
     ];
     $bubbleStored = $bubbleLib->dbGetMany('{identifier}', array_keys($bubbleDefaults));
     $bt = [];
@@ -93,6 +94,7 @@
         'favicon' => $btFavicon,
         'pwa' => $bt['pwa_enabled'] === '1',
         'manifest' => '/extensions/{identifier}/manifest.webmanifest',
+        'noBrand' => $bt['hide_branding'] === '1',
     ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
 @endphp
 
@@ -225,6 +227,7 @@
     if (BT.glass) { document.body.classList.add('bubbletheme-glass'); }
     if (BT.sidebar) { document.body.classList.add('bubbletheme-sidebar'); }
     if (BT.bgImage) { document.body.classList.add('bubbletheme-bgimg'); }
+    if (BT.noBrand) { document.body.classList.add('bubbletheme-nobrand'); }
 
     /* Announcement banner: move above the React root so layout flows */
     var ann = document.getElementById('bubbletheme-announcement');
@@ -276,6 +279,18 @@
         status: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 13h3.2l2.1-5.6a1 1 0 0 1 1.88.04l2.92 8.75 1.98-3.71A1 1 0 0 1 16 12h5a1 1 0 1 1 0 2h-4.4l-2.72 5.1a1 1 0 0 1-1.83-.15L9.2 10.6l-1.26 3.75A1 1 0 0 1 7 15H3a1 1 0 1 1 0-2z"/></svg>'
     };
 
+    function navLabelFor(el) {
+        if (el.classList.contains('bubbletheme-navlink')) { return el.title || ''; }
+        if (el.classList.contains('navigation-link')) { return 'Search'; }
+        if (el.tagName === 'BUTTON') { return 'Sign out'; }
+        if (el.tagName !== 'A') { return ''; }
+        var href = el.getAttribute('href') || '';
+        if (href === '/') { return 'Servers'; }
+        if (href.indexOf('/admin') === 0) { return 'Admin area'; }
+        if (href.indexOf('/account') === 0) { return 'Account'; }
+        return '';
+    }
+
     function applyNavExtras() {
         /* Custom logo (+ optional title removal) */
         var logoLink = document.querySelector('#logo a');
@@ -287,9 +302,12 @@
             img.alt = 'Panel logo';
             logoLink.insertBefore(img, logoLink.firstChild);
         }
-        /* Support links, placed before the last nav item (sign-out) */
+
         var nav = document.querySelector('[class*="RightNavigation"]');
-        if (nav && !nav.querySelector('a.bubbletheme-navlink')) {
+        if (!nav) { return; }
+
+        /* Support links, placed before the last nav item (sign-out) */
+        if (!nav.querySelector('a.bubbletheme-navlink')) {
             [['discord', BT.discord, 'Discord'], ['support', BT.support, 'Support'], ['status', BT.status, 'Status page']].forEach(function (entry) {
                 if (!entry[1]) { return; }
                 var a = document.createElement('a');
@@ -302,6 +320,53 @@
                 a.innerHTML = NAV_ICONS[entry[0]];
                 nav.insertBefore(a, nav.lastElementChild);
             });
+        }
+
+        /* Sidebar-mode extras: item labels, section headers, account chip.
+           Elements are display:none outside sidebar mode (theme.css §16). */
+        if (BT.sidebar) {
+            if (!nav.querySelector('.bubbletheme-navlabel')) {
+                Array.prototype.forEach.call(nav.children, function (el) {
+                    var text = navLabelFor(el);
+                    if (!text) { return; }
+                    var label = document.createElement('span');
+                    label.className = 'bubbletheme-navlabel';
+                    label.textContent = text;
+                    el.appendChild(label);
+                });
+            }
+            if (!nav.querySelector('.bubbletheme-navsection')) {
+                var mainHead = document.createElement('span');
+                mainHead.className = 'bubbletheme-navsection';
+                mainHead.textContent = 'Main menu';
+                nav.insertBefore(mainHead, nav.firstElementChild);
+                var firstSupport = nav.querySelector('a.bubbletheme-navlink');
+                if (firstSupport) {
+                    var supportHead = document.createElement('span');
+                    supportHead.className = 'bubbletheme-navsection';
+                    supportHead.textContent = 'Support';
+                    nav.insertBefore(supportHead, firstSupport);
+                }
+            }
+            var container = nav.parentElement;
+            var user = window.PterodactylUser;
+            if (container && user && user.username && !container.querySelector('.bubbletheme-userchip')) {
+                var chip = document.createElement('div');
+                chip.className = 'bubbletheme-userchip';
+                var dot = document.createElement('span');
+                dot.className = 'bubbletheme-userchip-dot';
+                dot.textContent = String(user.username).charAt(0);
+                var info = document.createElement('div');
+                var userName = document.createElement('strong');
+                userName.textContent = user.username;
+                var userMail = document.createElement('small');
+                userMail.textContent = user.email || '';
+                info.appendChild(userName);
+                info.appendChild(userMail);
+                chip.appendChild(dot);
+                chip.appendChild(info);
+                container.insertBefore(chip, nav);
+            }
         }
     }
     applyNavExtras();

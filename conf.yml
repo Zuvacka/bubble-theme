@@ -3,7 +3,7 @@ info:
   identifier: "bubbletheme"
   description: "The official Žuvačka theme for Pterodactyl — a neobrutalist, bubble-gum pink client area with a full Bubble Editor: color presets, custom logo, GlassUI mode, sidebar layout, announcements, hotkeys, support links, SEO & PWA options, custom CSS and a matching admin theme."
   flags: ""
-  version: "2.0.0"
+  version: "2.1.0"
   target: "beta-2026-05"
   author: "Žuvačka"
   icon: "icon.svg"

@@ -43,7 +43,7 @@ class {identifier}ExtensionController extends Controller
         'font_url'        => '',
         // Layout & style
         'style_mode'      => 'brutal',
-        'layout'          => 'topbar',
+        'layout'          => 'sidebar',
         'radius'          => '10',
         'shadow'          => '4',
         'bg_image'        => '',
@@ -69,6 +69,7 @@ class {identifier}ExtensionController extends Controller
         // Power tools
         'custom_css'      => '',
         'admin_theme'     => '1',
+        'hide_branding'   => '1',
     ];
 
     public function __construct(
@@ -154,6 +155,7 @@ class {identifier}SettingsFormRequest extends AdminFormRequest
             'pwa_short'         => ['nullable', 'string', 'max:20'],
             'custom_css'        => ['nullable', 'string', 'max:20000'],
             'admin_theme'       => $toggle,
+            'hide_branding'     => $toggle,
         ];
     }
 
@@ -194,6 +196,7 @@ class {identifier}SettingsFormRequest extends AdminFormRequest
             'pwa_short' => 'PWA Short Name',
             'custom_css' => 'Custom CSS',
             'admin_theme' => 'Admin Theme',
+            'hide_branding' => 'Hide Panel Branding',
         ];
     }
 }
